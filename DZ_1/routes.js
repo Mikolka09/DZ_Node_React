@@ -7,4 +7,10 @@ router.post("/api/admin", cAdmin.post);
 router.put("/api/admin", cAdmin.put);
 router.delete("/api/admin", cAdmin.delete);
 
+const cUser = require("./controllers/userController");
+router.get("/api/user", cUser.get);
+router.post("/api/user", cUser.post);
+router.put("/api/user", cUser.put);
+router.delete("/api/user", cUser.delete);
+
 module.exports = router;
