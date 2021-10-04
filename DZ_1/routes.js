@@ -13,4 +13,7 @@ router.post("/api/user", cUser.post);
 router.put("/api/user", cUser.put);
 router.delete("/api/user", cUser.delete);
 
+const cMedia = require("./controllers/mediaController")
+router.post("/api/media", cMedia.post);
+
 module.exports = router;
