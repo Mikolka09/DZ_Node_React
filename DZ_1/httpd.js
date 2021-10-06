@@ -1,11 +1,19 @@
 const express = require("express");
+const path =require("path");
 const app = express();
 
 //Установить каталог для статических файлов
 app.use(express.static("public"));
 
+// Установить каталог для хранения файлов
+//app.use(express.static("public/storage/avatars"));
+
+//Установить загрузку файлов
+const multer = require("multer")
+app.use(multer({dest:"public/storage/avatars"}).single("AvatarFile"));
+
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 
 //Подключить маршруты

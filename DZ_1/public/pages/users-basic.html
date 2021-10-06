@@ -180,7 +180,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <form class="needs-validation" name="userForm">
+                            <form class="needs-validation" name="userForm" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col">
                                         <div class="text-danger"></div>
@@ -190,34 +190,41 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="FirstName"></label><br/>
-                                            <input class="form-control" placeholder="Иван" id="FirstName" required/>
+                                            <input class="form-control" type="text" placeholder="Иван" id="FirstName"
+                                                   name="FirstName" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="LastName"></label><br/>
-                                            <input class="form-control" placeholder="Иванов" id="LastName" required/>
+                                            <input class="form-control" type="text" placeholder="Иванов" name="LastName"
+                                                   id="LastName" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="Login"></label><br/>
-                                            <input class="form-control" placeholder="Ivan" id="Login" required/>
+                                            <input class="form-control" type="text" placeholder="Ivan" name="Login"
+                                                   id="Login" required/>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
                                             <label class="form-label" for="Email"></label><br/>
-                                            <input class="form-control" placeholder="ivan@mail.com" id="Email"
+                                            <input class="form-control" type="email" placeholder="ivan@mail.com"
+                                                   id="Email" name="Email"
                                                    required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="Year"></label><br/>
-                                            <input class="form-control" placeholder="1988" id="Year" required/>
+                                            <input class="form-control" type="text" placeholder="1988" id="Year"
+                                                   name="Year" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="Password"></label><br/>
-                                            <input class="form-control" placeholder="_Aa123456" id="Password" required/>
+                                            <input class="form-control" type="password" placeholder="_Aa123456"
+                                                   id="Password" name="Password" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="PasswordConfirm"></label><br/>
-                                            <input class="form-control" placeholder="_Aa123456" id="PasswordConfirm"
+                                            <input class="form-control" type="password" placeholder="_Aa123456"
+                                                   id="PasswordConfirm" name="PasswordConfirm"
                                                    required/>
                                         </div>
                                     </div>
@@ -246,7 +253,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <form class="needs-validation" name="userFormEd">
+                            <form class="needs-validation" name="userFormEd" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col">
                                         <div class="text-danger"></div>
@@ -257,35 +264,41 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="FirstName"></label><br/>
-                                            <input class="form-control" placeholder="Иван" id="FirstNameEd" required/>
+                                            <input class="form-control" type="text" placeholder="Иван" id="FirstNameEd"
+                                                   name="FirstName" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="LastName"></label><br/>
-                                            <input class="form-control" placeholder="Иванов" id="LastNameEd" required/>
+                                            <input class="form-control" type="text" placeholder="Иванов" name="LastName"
+                                                   id="LastNameEd" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="Login"></label><br/>
-                                            <input class="form-control" placeholder="Ivan" id="LoginEd" required/>
+                                            <input class="form-control" type="text" placeholder="Ivan" name="Login"
+                                                   id="LoginEd" required/>
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
                                             <label class="form-label" for="Email"></label><br/>
-                                            <input class="form-control" placeholder="ivan@mail.com" id="EmailEd"
+                                            <input class="form-control" type="email" placeholder="ivan@mail.com"
+                                                   id="EmailEd" name="Email"
                                                    required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="Year"></label><br/>
-                                            <input class="form-control" placeholder="1988" id="YearEd" required/>
+                                            <input class="form-control" type="text" placeholder="1988" id="YearEd"
+                                                   name="Year" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="Password"></label><br/>
-                                            <input class="form-control" placeholder="_Aa123456" id="PasswordEd"
-                                                   required/>
+                                            <input class="form-control" type="password" placeholder="_Aa123456"
+                                                   id="PasswordEd" name="Password" required/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="PasswordConfirm"></label><br/>
-                                            <input class="form-control" placeholder="_Aa123456" id="PasswordConfirmEd"
+                                            <input class="form-control" type="password" placeholder="_Aa123456"
+                                                   id="PasswordConfirmEd" name="PasswordConfirm"
                                                    required/>
                                         </div>
                                     </div>
@@ -366,22 +379,36 @@
         </div>
 
         <script>
-            let UsersList = [];
+            let UsersList = new Array();
+
+            function UrlImg(url){
+                return url;
+            }
 
             // Процесс отсылки изображения:
             function sendImg() {
                 let formData = new FormData(); // Объект для отправки файла
                 formData.append("AvatarFile", document.getElementById("AvatarFile").files[0]); // файл
-                fetch('/api/media',
+                console.log(formData);
+                let result = fetch('/api/media',
                     {
                         method: 'POST',
                         body: formData
                     })
                     .then(response => {
-                        console.log(response);
-                        return response.text();
+                        if (response.ok) {
+                            console.log(response);
+                            return response.text();
+                        } else {
+                            console.log(response.statusText);
+                        }
+                    })
+                    .then(function (imgUrl) {
+                        console.log(imgUrl);
+                        return  imgUrl;
                     })
                     .catch(err => console.log(err));
+                return result;
             }
 
             function sendEdit() {
@@ -473,11 +500,13 @@
                 th1.innerText = "#";
                 th1.scope = "col";
                 trH.appendChild(th1);
-                for (let i = 0; i < UsersList[0].length; i++) {
-                    let th = document.createElement("th");
-                    th.innerText = UsersList[0][i].name;
-                    th.scope = "col";
-                    trH.appendChild(th);
+                for (const item in UsersList[0]) {
+                    if (item != "_id" && item != "__v") {
+                        let th = document.createElement("th");
+                        th.innerText = item;
+                        th.scope = "col";
+                        trH.appendChild(th);
+                    }
                 }
                 thead.appendChild(trH);
                 table.appendChild(thead);
@@ -522,7 +551,7 @@
 
             function loadUsers() {
                 fetch("/api/user")
-                    .then(res => res.json)
+                    .then(res => res.json())
                     .then(json => {
                         UsersList = json;
                         buildListUsers();
@@ -537,27 +566,52 @@
             document.getElementById("btnSend").onclick = function () {
                 let form = document.forms.userForm;
                 let user = {};
+                let pass = "";
+                let passConf = "";
                 for (let i = 0; i < form.elements.length; i++) {
-                    if (i == 0) {
-                        user[form.elements[i].name] = sendImg();
-                        console.log(user[form.elements[i].name]);
-                    }
-                    user[form.elements[i].name] = form.elements[i].value;
+                    if (form.elements[i].name === "Password") pass = form.elements[i].value;
+                    if (form.elements[i].name === "PasswordConfirm") passConf = form.elements[i].value;
                 }
-                console.log(user);
-                fetch("/api/user", {
-                    method: "POST",
-                    body: JSON.stringify(user),
-                    headers: {'Content-Type': 'application/json'}
-                })
-                    .then(res => res.json)
-                    .then(json => {
-                        UsersList.push(json);
-                        buildListUsers();
+                if (pass != passConf) {
+                    alert("Пароли не сходятся, введите пароли снова!");
+                } else {
+                    for (let i = 0; i < form.elements.length; i++) {
+                        if (form.elements[i].name === "AvatarFile") {
+                            let UrlImg = sendImg();
+                            user[form.elements[i].name] = UrlImg;
+                            console.log(user[form.elements[i].name]);
+                        }
+                        if (form.elements[i].name === "Password") {
+                            user[form.elements[i].name] = form.elements[i].value;
+                            console.log(user[form.elements[i].name]);
+                        }
+                        if (form.elements[i].name === "PasswordConfirm") {
+                            user[form.elements[i].name] = form.elements[i].value;
+                        }
+                    }
+                    console.log(user);
+                    fetch("/api/user", {
+                        method: "POST",
+                        body: JSON.stringify(user),
+                        headers: {'Content-Type': 'application/json'}
                     })
-                    .catch(err => {
-                        if (err) console.log(err);
-                    });
+                        .then(res => {
+                            if (res.ok) {
+                                console.log(res);
+                                return res.json();
+                            }
+                        })
+                        .then(json => {
+                            if (!Array.isArray(UsersList)) {
+                                UsersList = [];
+                            }
+                            UsersList.push(json);
+                            buildListUsers();
+                        })
+                        .catch(err => {
+                            if (err) console.log(err);
+                        });
+                }
             };
 
 

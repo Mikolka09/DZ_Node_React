@@ -6,11 +6,11 @@ exports.post = function (req, res){
     console.log("Media POST Start");
     console.log(req.body); //"multipart/form-data" -  не работает
 
-    //let fileData = req.file;
-    //console.log(fileData);
+    let fileData = req.file;
+    console.log(fileData);
 
-    //let tm_path = req.file.path;
-    //console.log(tm_path);
+    let tm_path = req.file.path;
+    console.log(tm_path);
 
     //console.log("Ext: ");
     //console.log(ext.extension(fileData.mimetype));

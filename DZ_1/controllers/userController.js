@@ -7,7 +7,7 @@ exports.post = function (req, res){
     const element =new model(req.body);
     element.save(  function (err){
         if(err){console.log(err); return err;}
-        return res.send(element);
+        return res.json(element);
     });
 };
 
