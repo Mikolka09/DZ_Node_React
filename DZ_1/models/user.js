@@ -10,9 +10,8 @@ const User = new Schema({
     Email: String,
     Year: Number,
     Pass: String,
-    DateReg: Date.now().toLocaleString()
-    // Описание полей не имеет значение
-    //JS создает объект динамически
+    DateReg: Date
+
 });
 
 module.exports = mongoose.model("User", User);

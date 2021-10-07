@@ -5,7 +5,7 @@ const model = require("../models/user")
 exports.post = function (req, res){
     console.log("POST Start");
     const element =new model(req.body);
-    element.save(  function (err){
+    element.save(function (err){
         if(err){console.log(err); return err;}
         return res.json(element);
     });

@@ -186,7 +186,7 @@
                                         <div class="text-danger"></div>
                                         <div class="form-group">
                                             <label class="form-label" for="AvatarFile"></label><br/>
-                                            <input class="form-control" id="AvatarFile" name="AvatarFile" type="file"/>
+                                            <input class="form-control" id="AvatarFile" name="ImgAv" type="file"/>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label" for="FirstName"></label><br/>
@@ -235,14 +235,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="btnSend" class="btn btn-primary">Cerate</button>
+                    <button type="button" id="btnSend" class="btn btn-primary" data-bs-dismiss="modal">Cerate</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Edit -->
-    <div class="modal fade" id="staticBackdropEd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="modal fade" id="staticBackdropEd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-2"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -259,7 +259,7 @@
                                         <div class="text-danger"></div>
                                         <div class="form-group">
                                             <label class="form-label" for="AvatarFile"></label><br/>
-                                            <input class="form-control" id="AvatarFileEd" name="AvatarFile"
+                                            <input class="form-control" id="AvatarFileEd" name="ImgAv"
                                                    type="file"/>
                                         </div>
                                         <div class="form-group">
@@ -309,7 +309,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="btnSendEd" class="btn btn-primary">Save</button>
+                    <button type="button" id="btnSendEd" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
@@ -381,16 +381,16 @@
         <script>
             let UsersList = new Array();
 
-            function UrlImg(url){
+            function UrlImg(url) {
                 return url;
             }
 
             // Процесс отсылки изображения:
-            function sendImg() {
+            function sendImg(user) {
                 let formData = new FormData(); // Объект для отправки файла
                 formData.append("AvatarFile", document.getElementById("AvatarFile").files[0]); // файл
                 console.log(formData);
-                let result = fetch('/api/media',
+                fetch('/api/media',
                     {
                         method: 'POST',
                         body: formData
@@ -403,30 +403,47 @@
                             console.log(response.statusText);
                         }
                     })
-                    .then(function (imgUrl) {
-                        console.log(imgUrl);
-                        return  imgUrl;
+                    .then(ImgAv => {
+                        console.log(ImgAv);
+                        user.ImgAv = ImgAv;
                     })
                     .catch(err => console.log(err));
-                return result;
+                return user;
             }
 
             function sendEdit() {
-                let user = UsersList.find(p => p._id == this._id);
+                let user = UsersList.find(p => p._id === this._id);
                 let form = document.getElementById("userFormEd");
                 for (let i = 0; i < form.elements.length; i++) {
                     form.elements[i].value = user[i].value;
                 }
                 document.getElementById("btnSendEd").onclick = function () {
-                    let userEd = {};
+                    let form = document.forms.userForm;
+                    let user = {};
+                    let pass = "";
+                    let passConf = "";
                     for (let i = 0; i < form.elements.length; i++) {
-                        if (i == 0) {
-                            userEd[form.elements[i].name] = sendImg();
-                            console.log(userEd[form.elements[i].name]);
-                        }
-                        userEd[form.elements[i].name] = form.elements[i].value;
+                        if (form.elements[i].name === "Password") pass = form.elements[i].value;
+                        if (form.elements[i].name === "PasswordConfirm") passConf = form.elements[i].value;
                     }
-                    console.log(user);
+                    if (pass !== passConf) {
+                        alert("Пароли не сходятся, введите пароли снова!");
+                    } else {
+                        for (let i = 0; i < form.elements.length; i++) {
+                            if (form.elements[i].name === "ImgAv") {
+                                sendImg(user);
+                                console.log(user.ImgAv);
+                            }
+                            if (form.elements[i].name === "Password") {
+                                user[form.elements[i].name] = form.elements[i].value;
+                                console.log(user.Pass);
+                            }
+                            if (form.elements[i].name !== "PasswordConfirm") {
+                                user[form.elements[i].name] = form.elements[i].value;
+                            }
+                        }
+                        user.DateReg = Date.now();
+                        console.log(user);
                     fetch("/api/user", {
                         method: "PUT",
                         body: JSON.stringify(user),
@@ -441,7 +458,7 @@
                             if (err) console.log(err);
                         });
                 }
-
+                form.reset();
             }
 
             function sendDelete() {
@@ -452,8 +469,8 @@
                 })
                     .then(res => {
                         if (res.status === 200) {
-                            console.log(UsersList.findIndex(s => s._id == this._id));
-                            UsersList.splice(UsersList.findIndex(s => s._id == this._id));
+                            console.log(UsersList.findIndex(s => s._id === this._id));
+                            UsersList.splice(UsersList.findIndex(s => s._id === this._id));
                             buildListUsers();
                         } else {
                             console.log(res);
@@ -464,27 +481,30 @@
 
             function createButtonEdit() {
                 let aEdit = document.createElement("a");
-                aEdit.className = "btn btn-success";
+                aEdit.className = "btn btn-success btn-sm";
                 aEdit.type = "button";
-                aEdit.setDataAttribute("data-bs-toggle", "modalEdit");
-                aEdit.setDataAttribute("data-bs-target", "#staticBackdropEd");
+                aEdit.innerText = "Edit";
+                aEdit.setAttribute("data-bs-toggle", "modal");
+                aEdit.setAttribute("data-bs-target", "#staticBackdropEd");
                 return aEdit;
             }
 
             function createButtonDelete() {
                 let aDelete = document.createElement("a");
-                aDelete.className = "btn btn-danger";
+                aDelete.className = "btn btn-danger btn-sm";
                 aDelete.type = "button";
+                aDelete.innerText = "Delete";
                 aDelete.onclick = sendDelete;
                 return aDelete;
             }
 
             function createButtonDetail() {
                 let aDetail = document.createElement("a");
-                aDetail.className = "btn btn-info";
+                aDetail.className = "btn btn-info btn-sm mx-1";
                 aDetail.type = "button";
-                aDetail.setDataAttribute("data-bs-toggle", "modalDetail");
-                aDetail.setDataAttribute("data-bs-target", "#staticBackdropDt");
+                aDetail.innerText = "Detail";
+                aDetail.setAttribute("data-bs-toggle", "modal");
+                aDetail.setAttribute("data-bs-target", "#staticBackdropDt");
                 return aDetail;
             }
 
@@ -501,13 +521,17 @@
                 th1.scope = "col";
                 trH.appendChild(th1);
                 for (const item in UsersList[0]) {
-                    if (item != "_id" && item != "__v") {
+                    if (item !== "_id" && item !== "__v") {
                         let th = document.createElement("th");
                         th.innerText = item;
                         th.scope = "col";
                         trH.appendChild(th);
                     }
                 }
+                let th2 = document.createElement("th");
+                th2.innerText = "Buttons";
+                th2.scope = "col";
+                trH.appendChild(th2);
                 thead.appendChild(trH);
                 table.appendChild(thead);
                 let tbody = document.createElement("tbody");
@@ -517,32 +541,48 @@
                     thB.scope = "row";
                     thB.innerText = i + 1;
                     trB.appendChild(thB);
-                    for (let j = 0; j < UsersList[i].length; j++) {
-                        let td = document.createElement("td");
-                        if (j == 0) {
-                            let img = document.createElement("img");
-                            img.className = "rounded-circle d-block";
-                            img.width = "70px";
-                            img.alt = "ImgAv";
-                            img.src = UsersList[i][j].value;
-                            td.appendChild(img);
-                            trB.appendChild(td);
-                        } else {
-                            td.innerText = UsersList[i][j].value;
-                            trB.appendChild(td);
-                        }
-                        if (j == (UsersList[i].length - 1)) {
-                            let aEdit = createButtonEdit();
-                            aEdit.id = UsersList[i]._id;
-                            trB.appendChild(aEdit);
-                            let aDetail = createButtonDetail();
-                            aDetail.id = UsersList[i]._id;
-                            trB.appendChild(aDetail);
-                            let aDelete = createButtonDelete();
-                            aDelete.id = UsersList[i]._id;
-                            trB.appendChild(aDelete);
-                        }
-                    }
+
+                    let td1 = document.createElement("td");
+                    let td2 = document.createElement("td");
+                    let td3 = document.createElement("td");
+                    let td4 = document.createElement("td");
+                    let td5 = document.createElement("td");
+                    let td6 = document.createElement("td");
+                    let td7 = document.createElement("td");
+                    let img = document.createElement("img");
+                    img.className = "rounded-circle d-block";
+                    img.width = 70;
+                    img.alt = "ImgAv";
+                    let url = ".." + UsersList[i].ImgAv;
+                    img.setAttribute("src", `${url}`);
+                    td1.appendChild(img);
+                    trB.appendChild(td1);
+                    td2.innerText = UsersList[i].FirstName;
+                    trB.appendChild(td2);
+                    td3.innerText = UsersList[i].LastName;
+                    trB.appendChild(td3);
+                    td4.innerText = UsersList[i].Login;
+                    trB.appendChild(td4);
+                    td5.innerText = UsersList[i].Email;
+                    trB.appendChild(td5);
+                    td6.innerText = UsersList[i].Year;
+                    trB.appendChild(td6);
+                    let date = new Date(Date.parse(UsersList[i].DateReg));
+                    td7.innerText = date.toLocaleDateString();
+                    trB.appendChild(td7);
+                    let td8 = document.createElement("td");
+                    let aEdit = createButtonEdit();
+                    aEdit.id = UsersList[i]._id;
+
+                    let aDetail = createButtonDetail();
+                    aDetail.id = UsersList[i]._id;
+
+                    let aDelete = createButtonDelete();
+                    aDelete.id = UsersList[i]._id;
+                    td8.appendChild(aEdit);
+                    td8.appendChild(aDetail);
+                    td8.appendChild(aDelete)
+                    trB.appendChild(td8);
                     tbody.appendChild(trB);
                 }
                 table.appendChild(tbody);
@@ -572,23 +612,23 @@
                     if (form.elements[i].name === "Password") pass = form.elements[i].value;
                     if (form.elements[i].name === "PasswordConfirm") passConf = form.elements[i].value;
                 }
-                if (pass != passConf) {
+                if (pass !== passConf) {
                     alert("Пароли не сходятся, введите пароли снова!");
                 } else {
                     for (let i = 0; i < form.elements.length; i++) {
-                        if (form.elements[i].name === "AvatarFile") {
-                            let UrlImg = sendImg();
-                            user[form.elements[i].name] = UrlImg;
-                            console.log(user[form.elements[i].name]);
+                        if (form.elements[i].name === "ImgAv") {
+                            sendImg(user);
+                            console.log(user.ImgAv);
                         }
                         if (form.elements[i].name === "Password") {
                             user[form.elements[i].name] = form.elements[i].value;
-                            console.log(user[form.elements[i].name]);
+                            console.log(user.Pass);
                         }
-                        if (form.elements[i].name === "PasswordConfirm") {
+                        if (form.elements[i].name !== "PasswordConfirm") {
                             user[form.elements[i].name] = form.elements[i].value;
                         }
                     }
+                    user.DateReg = Date.now();
                     console.log(user);
                     fetch("/api/user", {
                         method: "POST",
@@ -612,6 +652,7 @@
                             if (err) console.log(err);
                         });
                 }
+                form.reset();
             };
 
 
