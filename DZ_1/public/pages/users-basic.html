@@ -110,10 +110,10 @@
                                  width="31">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="javascript:void(0)"><i class="ti-user m-r-5 m-l-5"></i>
+                            <a class="dropdown-item" href="../pages/pages-profile.html"><i class="ti-user m-r-5 m-l-5"></i>
                                 My Profile</a>
-                            <a class="dropdown-item" href="javascript:void(0)"><i class="ti-wallet m-r-5 m-l-5"></i>
-                                My Balance</a>
+                            <a class="dropdown-item" href="../pages/users-basic.html"><i class="ti-wallet m-r-5 m-l-5"></i>
+                                My Users</a>
                             <a class="dropdown-item" href="javascript:void(0)"><i class="ti-email m-r-5 m-l-5"></i>
                                 Inbox</a>
                         </ul>
@@ -444,21 +444,22 @@
                         }
                         user.DateReg = Date.now();
                         console.log(user);
-                    fetch("/api/user", {
-                        method: "PUT",
-                        body: JSON.stringify(user),
-                        headers: {'Content-Type': 'application/json'}
-                    })
-                        .then(res => res.json)
-                        .then(json => {
-                            UsersList.push(json);
-                            buildListUsers();
+                        fetch("/api/user", {
+                            method: "PUT",
+                            body: JSON.stringify(user),
+                            headers: {'Content-Type': 'application/json'}
                         })
-                        .catch(err => {
-                            if (err) console.log(err);
-                        });
+                            .then(res => res.json)
+                            .then(json => {
+                                UsersList.push(json);
+                                buildListUsers();
+                            })
+                            .catch(err => {
+                                if (err) console.log(err);
+                            });
+                    }
+                    form.reset();
                 }
-                form.reset();
             }
 
             function sendDelete() {
@@ -599,7 +600,7 @@
                     .catch(err => {
                         if (err) console.log(err);
                     });
-            };
+            }
 
             loadUsers();
 
@@ -653,7 +654,7 @@
                         });
                 }
                 form.reset();
-            };
+            }
 
 
         </script>
